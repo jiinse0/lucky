@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+    <title>Lucky Sparta</title>
+
+    <style>
+        .body {
+            color: #333;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.4;
+        }
+
+        .header {
+            position: sticky;
+            top: 0px;
+            background-color: white;
+            width: auto;
+            height: 100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: top;
+            margin: 0px auto 30px auto;
+            border-bottom: solid 1px goldenrod;
+            z-index: 30;
+        }
+
+        .luckyhead {
+            position: relative;
+            height: 100px;
+            width: 150px;
+            background-position: center;
+            background-size: cover;
+        }
+
+        .luckyhead img {
+
+            position: absolute;
+            width: 100%;
+            height: 85%;
+            object-fit: cover;
+            overflow: visible;
+
+        }
+
+        .wrap {
+            display: flex;
+            flex: auto;
+        }
+
+        /* 댓글 페이지의 코멘트 박스 */
+        .text-box {
+            display: block;
+            font-size: 20px;
+            width: 100%;
+            height: 30px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border: solid 1px gray;
+        }
+
+        textarea {
+            resize: none;
+            /* textarea 크기가 변경되는걸 고정시켜주는 코드입니다. */
+        }
+
+        #comment-box {
+            height: 100px;
+
+        }
+
+        /* 좌측 반을 차지하는 div 사진 이름 */
+        .left {
+            align-items: center;
+            width: 50%;
+            height: 100%;
+            margin: 0 0 auto 0;
+            display: flex;
+            flex-direction: column;
+            background-color: transparent;
+            justify-content: center;
+        }
+
+        /* 우측  반을 차지하는 div 팀원소개+댓글 */
+
+        .right {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 50%;
+            /* ?? */
+            height: 100%;
+            margin: auto;
+            justify-content: center;
+        }
+
+        /* 이미지가 들어가는 div */
+        .image-box {
+            width: 500px;
+            height: 500px;
+            margin-top: 40px;
+            border: solid 5px goldenrod;
+            background-image: url('data:image/jpeg;base64,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');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .membername {
+            width: 300px;
+            height: 40px;
+            text-align: center;
+            font-size: 30px;
+            margin: 10px auto 10px auto;
+        }
+
+        .btns {
+            width: 300px;
+            display: flex;
+            justify-content: space-between;
+            padding: 0px 25px 0px 25px;
+        }
+
+        .btn-e {
+            width: 100px;
+            height: 40px;
+            background-color: rgb(245, 188, 43);
+            border-color: rgb(245, 188, 43);
+            border-radius: 10px;
+        }
+
+        .btn-e:hover {
+            background-color: goldenrod;
+        }
+
+        /* 수정과 삭제버튼 CSS입니다. */
+        .UDBtn {
+            margin-right: 10px;
+            margin-top: 5px;
+            width: 70px;
+            height: 30px;
+            background-color: rgb(245, 188, 43);
+            border-color: rgb(245, 188, 43);
+            border-radius: 10px;
+
+        }
+
+        .UDBtn:hover {
+            background-color: goldenrod;
+        }
+
+        /* 홈으로 버튼 */
+        .back-btn {
+            width: 300px;
+            height: 40px;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            background-color: rgb(245, 188, 43);
+            border-color: rgb(245, 188, 43);
+            border-radius: 10px;
+        }
+
+        /* 홈으로버튼 마우스 오버시 */
+        .back-btn:hover {
+            background-color: goldenrod;
+        }
+
+        /* 댓글박스 전체를 감싸고있는 CSS입니다 */
+        .introduce {
+            height: 400px;
+            width: 500px;
+            border: solid 5px goldenrod;
+            text-align: initial;
+            font-size: 15px;
+            padding: 15px;
+            overflow-y: scroll;
+        }
+
+        .comment-list {
+            text-align: right;
+
+
+            display: flex;
+            flex-direction: column;
+            margin: auto 8.5% 0 8.5%;
+        }
+
+        /* 댓글 박스 div하나하나에 적용되는 CSS입니다 */
+        .comment {
+            margin-top: 20px;
+            color: black;
+            width: 500px;
+            background-color: transparent;
+            border: solid 5px goldenrod;
+            padding: 10px;
+
+        }
+
+        .comments {
+            margin-top: 20px;
+            color: black;
+            width: 100%;
+            background-color: transparent;
+            border: solid 5px goldenrod;
+            padding: 10px;
+        }
+
+        .pressbtn {
+            width: 100px;
+            height: 40px;
+            background-color: rgb(245, 188, 43);
+            border-color: rgb(245, 188, 43);
+            border-radius: 10px;
+        }
+
+        .pressbtn:hover {
+            background-color: goldenrod;
+        }
+
+
+
+        /* 댓글 수정 팝업 CSS입니다. */
+        .modify_popup {
+            padding: 20px;
+            display: flex;
+            width: 10px;
+            height: 10px;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            align-items: center;
+            justify-content: center;
+            margin: auto;
+            position: fixed;
+            text-align: center;
+            z-index: 10;
+            background-color: white;
+            visibility: hidden;
+        }
+
+        .popup {
+            padding: 20px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+            width: 500px;
+            height: 400px;
+            border-radius: 11px;
+            background-color: #ffffff;
+        }
+
+        .popup h1 {
+            margin: 0px;
+            font-size: 22px;
+            font-weight: 500;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1;
+            letter-spacing: -1.1px;
+            color: #000000;
+        }
+
+        .popup input {
+            width: 330px;
+            height: 39px;
+            border-radius: 2px;
+            border: solid 1.1px #dee2e6;
+            margin-right: 9px;
+            margin-bottom: 10px;
+            padding-left: 10px;
+        }
+
+        #margin {
+            margin-left: 50px;
+        }
+
+        .middle {
+            text-align: center;
+            margin-right: 10px;
+        }
+
+        .textarea {
+            border: solid 1.1px #dee2e6;
+            resize: none;
+        }
+
+        .cta {
+            text-align: center;
+            margin-top: 10px;
+            margin-right: 15px;
+        }
+
+        .cta :hover {
+            border-color: #3333;
+            background-color: #E9A916;
+        }
+
+
+        /* 댓글 수정 팝업의 뒷 배경 CSS입니다 */
+        .popup-back {
+            visibility: hidden;
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            top: 0;
+            margin: auto;
+            background-color: black;
+            opacity: 0.5;
+            z-index: 9;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            //페이지 로딩과 동시에 실행되는 자리 입니다 show_comment함수를 실행합니다.
+            show_comment();
+            show_users();
+        });
+        // 위 ready 함수에서 실행되어 페이지 시작시 실행되는 댓글을 가져오는 함수 입니다.
+        function show_users() {
+            let id
+            if (localStorage.getItem('user_id')) {
+                id = localStorage.getItem('user_id');
+            }
+
+            fetch("/introduction").then(res => res.json()).then(data => {
+                let rows = data['result']
+                $('#users').empty()
+                rows.forEach((a) => {
+
+                    let _id = a['_id']
+                    console.log(_id)
+                    if (id == _id) {
+
+                        let img_url = a['img_url']
+                        let name = a['name']
+                        let introduce = a['introduce']
+                        console.log(img_url, name, introduce)
+
+                        // 가져온 이미지, 이름을 html에 붙임
+
+                        let temp_html = `<div class="left">
+                        <div id="image-box" class="image-box"></div>
+                        <div style="text-align: center;">
+                            <div class="membername">${name}</div>
+                            <div class="btns"> <button onclick="OnClickEdit()" class="btn-e">수정</button><button onclick="deleting_user(localStorage.getItem('user_id'))" class="btn-e">삭제</button></div>
+                            <button onclick="back_btn()" class="back-btn">팀 소개 페이지로 이동</button>
+                        </div>
+                    </div>
+
+                    <!-- 여기까지 좌측페이지 -->
+
+                    <!-- 여기부터 우측 팀원소개+댓글등록 html -->
+
+                    <div class="right">
+            <h3>Members of Lucky Sparta</h3>
+            <textarea class ="introduce" cols="55" rows="20" readonly>${introduce}</textarea>
+            <div class=comment>
+                <h4>댓글입력</h4>
+                <input id="nickname" class="text-box" type="text" placeholder="닉네임">
+                <textarea id="comment-box" placeholder="내용을 입력해주세요." id="comment" cols="30" rows="10"></textarea>
+                <button onclick="comment_posting()" style="display: block;" class="pressbtn">댓글등록</button>
+            </div>
+        </div>`
+
+                        $('#users').append(temp_html)
+                        document.getElementById("image-box").style.backgroundImage = `url(${img_url}), url('data:image/jpeg;base64,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')`
+
+                    }
+
+                })
+            })
+
+        }
+        function show_comment() {
+            fetch("/comment").then(res => res.json()).then(data => {
+
+                let rows = data['result']
+                $('#comment-list').empty()
+                rows.forEach((a) => {
+                    let comment_user_id = a['user_id'] // 데이터베이스에 있는 댓글 썼을 당시 유저 id 가져오기
+                    if (localStorage.getItem('user_id')) {  //현재 페이지에 유저id가져오기
+                        user_id = localStorage.getItem('user_id')
+                    }
+                    //user_id검사 부분 현재 페이지유저의 댓글이 맞는지 
+                    if (user_id == comment_user_id) {
+                        let nickname = a['nickname']
+                        let comment = a['comment']
+
+                        let _id = a['_id']
+
+                        //temp_html로 댓글을 하나씩 html코드로 붙입니다.
+                        let temp_html = `<div id =${_id} class="comments">
+                        
+                        ${nickname}
+                            <h6>${comment}</h6>
+                            <button onclick="modify_popup('${_id}')" class="UDBtn">수정</button><button class="UDBtn" onclick="deleting_comment('${_id}')">삭제</button>
+                        </div>`
+                        $('#comment-list').append(temp_html)
+                    }
+
+
+                })
+            })
+        }
+
+        // 댓글등록 함수입니다.
+        function comment_posting() {
+            //입력한 댓글을 id값으로 찾아 밸류를 저장
+            let comment = $('#comment-box').val();
+            //입력한 닉네임을 id 값으로 찾아 밸류를 저장
+            let nickname = $('#nickname').val();
+            let user_id
+            if (localStorage.getItem('user_id')) {
+                user_id = localStorage.getItem('user_id')
+            }
+            if (nickname == "") {
+                alert("닉네임을 입력하세요.")
+            }
+            else if (comment == "") {
+                alert("내용을 입력하세요.")
+            }
+            else {
+                let formData = new FormData();
+                //가져온 댓글과 닉네임을 formData에 추가
+                formData.append("comment_give", comment);
+                formData.append("nickname_give", nickname);
+                formData.append("user_id_give", user_id);
+                //추가한 댓글과 닉네임을 넘겨준다.
+
+
+                //어떤 멤버의 댓글인지 확인 할 수 있게 나중에 html틀이 잡히면 상세페이지에서
+                //멤버의 이름의 value값을 받아올 수 있도록 수정해야할 것 같음.
+                fetch('/comment', {
+                    method: "POST", body: formData
+                }).then((res) => res.json()).then((data) => {
+                    alert(data['msg'])
+                    window.location.reload();
+                })
+            }
+        }
+
+        // 댓글 업데이트 함수입니다.
+        function updating_comment() {
+            let nickname2 = $('#nickname_modify').val();
+            //닉네임을 id값으로 찾아 밸류를 저장
+            let comment2 = $('#comment-box_modify').val();
+            if (localStorage.getItem('modify_id')) {
+                _id = localStorage.getItem('modify_id')
+            }
+            //댓글을 id값으로 찾아 밸류를 저장
+            let id = _id;
+            let formData = new FormData();
+            //위 찾은 데이터들을 모두 formData에 append
+            formData.append("nickname2_update3", nickname2);
+            formData.append("comment2_update3", comment2);
+            formData.append("_id_update3", id);
+
+            //서버로 넘겨준다.
+            fetch('/comment', {
+                method: "PUT", body: formData
+            }).then((res) => res.json()).then((data) => {
+                alert(data['msg'])  //완료시 alert로 메세지 출력
+                window.location.reload();//화면 새로고침 코드
+            })
+        }
+        // 수정하는 팝업이 열리는 함수 입니다. id를 받아와서 localStorage에 저장합니다.
+        function modify_popup(_id) {
+            document.getElementById("modify_popup").style.visibility = "visible"
+            document.getElementById("popup-back").style.visibility = "visible"
+            localStorage.setItem('modify_id', _id);
+        }
+        // 팝업이 닫히는 코드입니다.
+        function modify_popup_cls() {
+            document.getElementById("modify_popup").style.visibility = "hidden"
+            document.getElementById("popup-back").style.visibility = "hidden"
+        }
+        function OnClickEdit() {
+            localStorage.setItem('addOrModify', "MODIFY")
+            window.location.href = '/addTeam'
+        }
+        function deleting_comment(_id) {
+            if (confirm("해당 댓글을 삭제할까요?")) {
+                let id = _id;
+                let formData = new FormData()
+                formData.append("_id_give", id)
+                fetch('/comment', { method: "DELETE", body: formData }).then((res) => res.json()).then((data) => {
+                    alert(data['msg'])
+                    window.location.reload()
+                })
+            }
+        }
+        function deleting_user(_id) {
+            console.log('삭제 함수 실행')
+            if (confirm("해당 팀원을 삭제할까요?")) {
+                let id = _id;
+                let formData = new FormData()
+                formData.append("_id_give", id)
+                fetch('/introduction', { method: "DELETE", body: formData }).then((res) => res.json()).then((data) => {
+                    alert(data['msg'])
+                    window.location.href = "/"
+
+                })
+            }
+        }
+        function back_btn() {
+            window.location.href = '/';
+        }
+    </script>
+</head>
+
+<body>
+    <!-- 배너부분입니다 -->
+    <div class="header">
+        <div class="luckyhead">
+            <a href="/"><img src="https://i.ibb.co/MMMFfkD/image.png" alt=""></a>
+        </div>
+        <img src="data:image/png;base64,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"
+            alt="스파르타">
+    </div>
+
+    <div id="users" class="wrap">
+        <!-- 여긴 팀원 사진과 이름이 들어가는 좌측 페이지 입니다. -->
+        <div class="left">
+            <div id="image-box" class="image-box"></div>
+            <div style="text-align: center;">
+                <div class="membername"></div>
+                <div class="btns"> <button onclick="OnClickEdit()" class="btn-e">Edit</button><button
+                        onclick="deleting_user(localStorage.getItem('user_id'))" class="btn-e">Delete</button></div>
+                <button class="back-btn">팀 소개 페이지로 이동</button>
+            </div>
+        </div>
+
+        <!-- 여기까지 좌측페이지 -->
+
+        <!-- 여기부터 우측 팀원소개+댓글등록 html -->
+
+
+        <div class="right">
+            <h3>Members of Lucky Sparta</h3>
+            <textarea class="introduce" cols="55" rows="20" readonly>"${introduce}"</textarea>
+            <div class=comment>
+                <h4>댓글입력</h4>
+                <input id="nickname" class="text-box" type="text" placeholder="닉네임">
+                <textarea id="comment-box" placeholder="내용을 입력해주세요." id="comment" cols="30" rows="10"></textarea>
+                <button onclick="comment_posting()" style="display: block;" class="pressbtn">댓글등록</button>
+            </div>
+        </div>
+        <!-- 여기까지 detail 우측페이지 -->
+    </div>
+
+    <div id="comment-list" class="comment-list">
+        <!-- 여긴 코멘트들이 들어갑니다 GET요청! -->
+    </div>
+    <div onmousedown="modify_popup_cls()" id="popup-back" class="popup-back"></div>
+    <!-- 이 밑은 수정 팝업 html입니다! -->
+
+    <div id="modify_popup" class="modify_popup">
+        <div id="container" class="popup-container">
+            <div class="popup">
+                <h1 class="middle"><img
+                        src="https://platum.kr/wp-content/uploads/2019/12/64497335_490811004989301_7459130390851092480_n.png"
+                        width="60" height="60">팝업창
+                    <img src="https://platum.kr/wp-content/uploads/2019/12/64497335_490811004989301_7459130390851092480_n.png"
+                        width="60" height="60">
+                </h1>
+                <div>
+                    <h6>
+                        <form class="middle">닉네임</form><input type="text" id="nickname_modify"
+                            placeholder="수정할 닉네임을 입력해주세요.">
+                        </form>
+                        <form class="middle">코멘트</form>
+                        <textarea class="textarea" id="comment-box_modify" cols="42" rows="5"
+                            placeholder="수정할 댓글을 입력해주세요."></textarea>
+                        </form>
+
+                        <div class="cta">
+                            <button type="button" onclick="updating_comment()" class="btn btn-warning">수정하기</button>
+                            <button type="button" onclick="modify_popup_cls()" class="btn btn-warning">닫기</button>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 여기까지 수정팝업 -->
+</body>
+
+</html>
